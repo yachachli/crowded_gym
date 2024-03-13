@@ -111,7 +111,7 @@ st.markdown("This neural network had Test MSE of 232.09 & Train MSE of 228.56")
 st.markdown("This is already better representation than linear regression!")
 
 st.markdown("")
-st.markdown("We then made polynomail regression graphs as well but realized that although they had good represenation, they began to overfit around 5-6 degrees")
+st.markdown("We then made polynomail regression graphs as well but realized that although they had good represenation, they began to overfit around 6-7 degrees")
 st.markdown("You can find these graphs in our Google Colab to see overfitting more clearly! The MSE also didn't get much lower than our Neural Network")
 st.markdown("Note: These would take too long to run in our frontend so we have screenshots of them instead:")
 
