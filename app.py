@@ -92,20 +92,21 @@ st.code(code, language='python')
 # With random search tuned hyperparameters
 
 st.markdown("This led us to this graph:")
-mlp = MLPRegressor(learning_rate_init = 0.03, max_iter=500)
-mlp.fit(X_train, y_train)
+st.image('Screenshot 2024-03-13 at 6.35.28 PM.png', caption='neural network graph')
+# mlp = MLPRegressor(learning_rate_init = 0.03, max_iter=500)
+# mlp.fit(X_train, y_train)
 
-y_test_pred_nn = mlp.predict(X_test)
-y_train_pred_nn = mlp.predict(X_train)
+# y_test_pred_nn = mlp.predict(X_test)
+# y_train_pred_nn = mlp.predict(X_train)
 
-# Change all predictions less than 0 to be 0
-y_test_pred_nn[y_test_pred_nn < 0] = 0
-y_train_pred_nn[y_train_pred_nn < 0 ] = 0
+# # Change all predictions less than 0 to be 0
+# y_test_pred_nn[y_test_pred_nn < 0] = 0
+# y_train_pred_nn[y_train_pred_nn < 0 ] = 0
 
-fig_3, ax_3 = plt.subplots()
-ax_3.scatter(X_test['hour'], y_test_pred_nn)
+# fig_3, ax_3 = plt.subplots()
+# ax_3.scatter(X_test['hour'], y_test_pred_nn)
 
-st.pyplot(fig_3)
+# st.pyplot(fig_3)
 
 st.markdown("This neural network had Test MSE of 232.09 & Train MSE of 228.56")
 st.markdown("This is already better representation than linear regression!")
@@ -113,9 +114,47 @@ st.markdown("This is already better representation than linear regression!")
 st.markdown("")
 st.markdown("We then made polynomail regression graphs as well but realized that although they had good represenation, they began to overfit around 6-7 degrees")
 st.markdown("You can find these graphs in our Google Colab to see overfitting more clearly! The MSE also didn't get much lower than our Neural Network")
-st.markdown("Note: These would take too long to run in our frontend so we have screenshots of them instead:")
+#st.markdown("Note: These would take too long to run in our frontend so we have screenshots of them instead:")
 
 st.image('Screenshot 2024-03-03 at 3.50.24 PM.png', caption='example of degree 4')
+
+
+st.markdown("Now we will make predictions using our model of choice which was degree 5 polynomial regression")
+
+# Define the degree of the polynomial
+degree = 5
+
+poly = PolynomialFeatures(degree=degree, include_bias=False)
+X_poly_train = poly.fit_transform(X_train)
+X_poly_test = poly.transform(X_test)
+
+poly_model = LinearRegression()
+poly_model.fit(X_poly_train, y_train)
+
+y_train_pred_poly = poly_model.predict(X_poly_train)
+y_test_pred_poly = poly_model.predict(X_poly_test)
+
+# Ensuring we don't have negative predictions
+y_train_pred_poly[y_train_pred_poly < 0] = 0
+y_test_pred_poly[y_test_pred_poly < 0] = 0
+
+# Calculate and display MSE
+test_mse = mean_squared_error(y_test, y_test_pred_poly)
+train_mse = mean_squared_error(y_train, y_train_pred_poly)
+st.write(f"Test MSE for degree {degree}: {test_mse:.2f}")
+st.write(f"Train MSE for degree {degree}: {train_mse:.2f}")
+
+# Plotting the results
+fig_poly, ax_poly = plt.subplots()
+ax_poly.scatter(X_test['hour'], y_test_pred_poly, label='Predictions')
+#ax_poly.scatter(X_test['hour'], y_test, label='Actual Data', alpha=0.5)
+ax_poly.legend()
+ax_poly.set_title(f"Polynomial Regression (Degree {degree}) Predictions")
+ax_poly.set_xlabel('Hour of the Day')
+ax_poly.set_ylabel('Number of People')
+
+st.pyplot(fig_poly)
+
 
 st.title("Let's do a short demo!")
 st.markdown("give an input of hour and day of the week, and we will predict how crowded the gym will be!")
@@ -149,13 +188,18 @@ day_of_week_int = day_to_int[day_of_week]
 
 scaler = MinMaxScaler(feature_range=(0, 1))
 scaler.fit(X)
-user_input = [[day_of_week_int, hour_of_day, expected_temp]]
-input_rescaled = scaler.transform(user_input)
 
-num_people = mlp.predict(input_rescaled)
+user_input = [[day_of_week_int, int(hour_of_day), expected_temp]]
+input_rescaled = scaler.transform(user_input)
+input_poly = poly.transform(input_rescaled)
+num_people = poly_model.predict(input_poly)
 
 if num_people < 0:
     num_people = 0
+    st.write("Based off of your input, we would expect: 0 people to be at the gym, please change the time, day, or temp")
+else:
+    st.write("Based off of your input, we would expect:", num_people, "To be at the gym")
 
-st.write("Based off of your input, we would expect:", num_people, "To be at the gym")
+
+
 
