@@ -20,7 +20,7 @@ st.markdown("Let's say you are a student who wants to know how crowded the gym w
 st.markdown("Using our modeling, we will help you find out given an hour and day of the week!")
 
 st.title("Let's begin!")
-st.markdown("first lets show our data which looks something like this")
+st.markdown("First let's show our data which looks something like this")
 # Read in data
 df = pd.read_csv('gym_data.csv')
 df_head = df.head()
@@ -112,7 +112,7 @@ st.markdown("This neural network had Test MSE of 232.09 & Train MSE of 228.56")
 st.markdown("This is already better representation than linear regression!")
 
 st.markdown("")
-st.markdown("We then made polynomail regression graphs as well but realized that although they had good represenation, they began to overfit around 6-7 degrees")
+st.markdown("We then made polynomial regression graphs as well but realized that although they had good representation, they began to overfit around 6-7 degrees")
 st.markdown("You can find these graphs in our Google Colab to see overfitting more clearly! The MSE also didn't get much lower than our Neural Network")
 #st.markdown("Note: These would take too long to run in our frontend so we have screenshots of them instead:")
 
@@ -171,7 +171,7 @@ day_of_week = st.selectbox(
 
 st.write('You will go on:', day_of_week)
 
-expected_temp = st.slider('What is the expected temperature?', 60, 85, 70)
+expected_temp = st.slider('What is the expected temperature? (F)', 60, 85, 70)
 st.write("You expecting a temperature of:", expected_temp)
 
 day_to_int = {
@@ -198,7 +198,7 @@ if num_people < 0:
     num_people = 0
     st.write("Based off of your input, we would expect: 0 people to be at the gym, please change the time, day, or temp")
 else:
-    st.write("Based off of your input, we would expect:", num_people, "To be at the gym")
+    st.write("Based off of your input, we would expect:", num_people, "People to be at the gym")
 
 
 
